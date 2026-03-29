@@ -132,10 +132,14 @@ def plan_renames(records: list[FileRecord], date_prefix: bool) -> None:
         if candidate != record.name:
             record.planned_name = candidate
 
-def plan_organization(records: list[FileRecord], root: Path) -> None:
+def plan_organization(records: list[FileRecord], root: Path, recursive: bool) -> None:
     for record in records:
         record_path = Path(record.path)
         relative_parent = record_path.parent.relative_to(root)
+
+        if recursive:
+            record.planned_category_folder = None
+            continue
 
         if relative_parent == Path(record.category):
             record.planned_category_folder = None
@@ -272,7 +276,7 @@ def main() -> None:
 
     records = build_records(root, recursive=args.recursive)
     plan_renames(records, date_prefix=args.date_prefix)
-    plan_organization(records, root)
+    plan_organization(records, root, args.recursive)
     summary = make_summary(root, records)
     write_report(output_dir, summary, records)
 
