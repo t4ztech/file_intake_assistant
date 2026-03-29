@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+
+output_test/
+output_test_rerun/
+output_test_rerun2/
+output_collision/
