@@ -276,7 +276,25 @@ def main() -> None:
     summary = make_summary(root, records)
     write_report(output_dir, summary, records)
 
+    if not records:
+        print(f"No files found in: {root}")
+        print(f"Preview only. See reports in: {output_dir}")
+        return
+
+    if summary.planned_renames == 0 and summary.planned_moves == 0:
+        print("No changes needed. Files already appear organized.")
+        print(f"Preview only. See reports in: {output_dir}")
+        return
+
     if args.apply:
+        confirmation = input(
+            f"About to apply rename/move changes in: {root}\nContinue? [y/N]: "
+        ).strip().lower()
+
+        if confirmation not in {"y", "yes"}:
+            print("Apply cancelled. No changes were made.")
+            return
+
         apply_changes(root, records, output_dir)
         print(f"Applied changes. See reports in: {output_dir}")
     else:
