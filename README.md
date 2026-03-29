@@ -1,4 +1,4 @@
-START README
+
 # File Intake Assistant
 
 A simple CLI tool for inspecting, previewing, renaming, and organizing messy folders safely.
@@ -112,4 +112,3 @@ Working features tested in WSL Ubuntu terminal.
 - no undo support yet
 - no custom naming templates yet
 - category organization is currently fixed by extension mapping
-END README
