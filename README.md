@@ -41,6 +41,20 @@ The tool is designed around a simple rule:
 
 ## Safe workflow
 
+## Example before and after
+
+### Before
+- `IMG 001.JPG`
+- `scan(1).pdf`
+- `final  final report.txt`
+- `weird@name!.csv`
+
+### After
+- `images/img_001.jpg`
+- `documents/scan_1.pdf`
+- `documents/final_final_report.txt`
+- `documents/weird_name.csv`
+
 ### Preview only
 
 Run the tool without `--apply` first.
