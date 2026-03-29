@@ -5,3 +5,17 @@ output_test/
 output_test_rerun/
 output_test_rerun2/
 output_collision/
+
+file_intake_assistant_v1_backup.py
+file_intake_assistant_v1_before_confirm_prompt.py
+
+test_input/
+test_collision/
+test_empty/
+
+output_empty/
+output_empty_check/
+output_no_changes/
+output_no_changes_2/
+output_no_changes_3/
+output_collision_check/
