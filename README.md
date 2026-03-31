@@ -31,6 +31,17 @@ The tool is built around a simple rule:
 - can apply rename + move operations
 - writes summary and operation reports
 
+## Recent improvement
+
+Version 1.3 focused on safety improvements based on real mixed-folder testing.
+
+- skipped `.lnk` files by default
+- skipped `.url` files by default
+- classified `.odt` files as documents
+- classified `.html` files as documents
+
+This made preview results less aggressive and reduced unnecessary cleanup suggestions on real desktop-style folder tests.
+
 ## Current categories
 
 - images
