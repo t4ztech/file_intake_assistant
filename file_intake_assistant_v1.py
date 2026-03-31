@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Iterable
 
 SAFE_IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".tiff"}
-SAFE_DOC_EXTS = {".pdf", ".doc", ".docx", ".txt", ".rtf", ".md", ".xls", ".xlsx", ".csv"}
+SAFE_DOC_EXTS = {".pdf", ".doc", ".docx", ".odt", ".txt", ".rtf", ".md", ".html", ".xls", ".xlsx", ".csv"}
 SAFE_ARCHIVE_EXTS = {".zip", ".rar", ".7z", ".tar", ".gz"}
 SAFE_AUDIO_EXTS = {".mp3", ".wav", ".m4a", ".flac", ".aac"}
 SAFE_VIDEO_EXTS = {".mp4", ".mov", ".avi", ".mkv", ".wmv"}
@@ -24,7 +24,6 @@ CATEGORY_MAP = {
     "audio": SAFE_AUDIO_EXTS,
     "video": SAFE_VIDEO_EXTS,
 }
-
 INVALID_NAME_RE = re.compile(r"[^A-Za-z0-9._ -]+")
 MULTISPACE_RE = re.compile(r"\s+")
 
@@ -95,7 +94,15 @@ def build_records(root: Path, recursive: bool) -> list[FileRecord]:
     name_counts = Counter(f.name.lower() for f in files)
     records: list[FileRecord] = []
 
+def build_records(root: Path, recursive: bool) -> list[FileRecord]:
+    files = sorted(iter_files(root, recursive), key=lambda p: str(p).lower())
+    name_counts = Counter(f.name.lower() for f in files)
+    records: list[FileRecord] = []
+
     for file_path in files:
+        if file_path.suffix.lower() in {".lnk", ".url"}:
+            continue
+
         stat = file_path.stat()
         record = FileRecord(
             path=str(file_path),
@@ -109,7 +116,7 @@ def build_records(root: Path, recursive: bool) -> list[FileRecord]:
         )
         records.append(record)
 
-    return records
+    return records 
 
 
 def plan_renames(records: list[FileRecord], date_prefix: bool) -> None:
