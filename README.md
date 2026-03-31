@@ -20,6 +20,14 @@ The tool is built around a simple rule:
 - preview changes
 - confirm before apply
 
+## WARNING !!!
+
+**1. MAKE A COPY OF YOUR ORIGINAL FOLDER**
+
+Do not test File Intake Assistant on your original folder first.
+
+Make a copy of the folder, run preview mode on that copy, and review the suggested changes before using `--apply`.
+
 ## What it does
 
 - scans a folder
