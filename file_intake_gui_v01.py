@@ -21,9 +21,12 @@ def normalize_folder_path(raw_path: str) -> str:
     return path
 
 
-def choose_folder(folder_var: tk.StringVar,
-                  status_var: tk.StringVar,
-                  summary_var: tk.StringVar) -> None:
+def choose_folder(
+    folder_var: tk.StringVar,
+    status_var: tk.StringVar,
+    summary_var: tk.StringVar,
+    preview_text: tk.Text,
+) -> None:
     folder = filedialog.askdirectory(title="Choose folder")
     if not folder:
         return
@@ -32,10 +35,18 @@ def choose_folder(folder_var: tk.StringVar,
     status_var.set("Status: Folder selected")
     summary_var.set("No preview yet")
 
+    preview_text.config(state="normal")
+    preview_text.delete("1.0", tk.END)
+    preview_text.insert(tk.END, "Preview output will appear here after you click 'Preview changes'.")
+    preview_text.config(state="disabled")
 
-def run_preview(folder_var: tk.StringVar,
-                status_var: tk.StringVar,
-                summary_var: tk.StringVar) -> None:
+
+def run_preview(
+    folder_var: tk.StringVar,
+    status_var: tk.StringVar,
+    summary_var: tk.StringVar,
+    preview_text: tk.Text,
+) -> None:
     raw_folder = folder_var.get().strip()
 
     if not raw_folder:
@@ -49,6 +60,11 @@ def run_preview(folder_var: tk.StringVar,
     if not folder_path.exists() or not folder_path.is_dir():
         status_var.set("Status: Folder path is not valid")
         summary_var.set("No preview yet")
+
+        preview_text.config(state="normal")
+        preview_text.delete("1.0", tk.END)
+        preview_text.insert(tk.END, "Preview could not be created because the folder path is not valid.")
+        preview_text.config(state="disabled")
         return
 
     try:
@@ -67,9 +83,16 @@ def run_preview(folder_var: tk.StringVar,
         )
 
         summary_path = Path(OUTPUT_DIR) / "summary.json"
+        preview_path = Path(OUTPUT_DIR) / "preview.txt"
+
         if not summary_path.exists():
             status_var.set("Status: Preview created, but summary not found")
             summary_var.set("No preview yet")
+
+            preview_text.config(state="normal")
+            preview_text.delete("1.0", tk.END)
+            preview_text.insert(tk.END, "Preview was created, but summary.json was not found.")
+            preview_text.config(state="disabled")
             return
 
         with summary_path.open("r", encoding="utf-8") as f:
@@ -90,41 +113,29 @@ def run_preview(folder_var: tk.StringVar,
             f"Moves: {summary.get('planned_moves', 0)}"
         )
 
+        preview_content = "Preview file not found."
+        if preview_path.exists():
+            preview_content = preview_path.read_text(encoding="utf-8")
+
+        preview_text.config(state="normal")
+        preview_text.delete("1.0", tk.END)
+        preview_text.insert(tk.END, preview_content)
+        preview_text.config(state="disabled")
+
     except subprocess.CalledProcessError:
         status_var.set("Status: Could not create preview")
         summary_var.set("No preview yet")
 
-
-def open_preview(status_var: tk.StringVar) -> None:
-    preview_path = Path(OUTPUT_DIR) / "preview.txt"
-
-    if not preview_path.exists():
-        status_var.set("Status: Preview file not found")
-        return
-
-    try:
-        subprocess.run(["xdg-open", str(preview_path)], check=True)
-    except subprocess.CalledProcessError:
-        status_var.set("Status: Could not open preview automatically")
-
-
-def open_preview_folder(status_var: tk.StringVar) -> None:
-    output_path = Path(OUTPUT_DIR)
-
-    if not output_path.exists():
-        status_var.set("Status: Preview folder not found")
-        return
-
-    try:
-        subprocess.run(["xdg-open", str(output_path)], check=True)
-    except subprocess.CalledProcessError:
-        status_var.set("Status: Could not open preview folder")
+        preview_text.config(state="normal")
+        preview_text.delete("1.0", tk.END)
+        preview_text.insert(tk.END, "Preview could not be created.")
+        preview_text.config(state="disabled")
 
 
 def main() -> None:
     root = tk.Tk()
     root.title("File Intake Assistant")
-    root.geometry("860x560")
+    root.geometry("980x720")
     root.configure(padx=20, pady=20)
 
     folder_var = tk.StringVar(value="")
@@ -159,57 +170,40 @@ def main() -> None:
     )
     preview_only_label.pack(pady=(0, 20))
 
-    selected_folder_title = tk.Label(
+    folder_title_label = tk.Label(
         root,
         text="Folder path:",
         font=("Arial", 11),
         anchor="w",
     )
-    selected_folder_title.pack(fill="x", pady=(0, 5))
+    folder_title_label.pack(fill="x", pady=(0, 5))
 
     folder_entry = tk.Entry(
         root,
         textvariable=folder_var,
         font=("Arial", 10),
-        width=90,
+        width=100,
     )
     folder_entry.pack(fill="x", pady=(0, 15))
 
+    button_frame = tk.Frame(root)
+    button_frame.pack(fill="x", pady=(0, 20))
+
     choose_folder_button = tk.Button(
-        root,
+        button_frame,
         text="Choose folder",
         font=("Arial", 11),
-        command=lambda: choose_folder(folder_var, status_var, summary_var),
         width=18,
     )
-    choose_folder_button.pack(pady=(0, 10))
+    choose_folder_button.pack(side="left", padx=(0, 10))
 
     preview_button = tk.Button(
-        root,
+        button_frame,
         text="Preview changes",
         font=("Arial", 11),
-        command=lambda: run_preview(folder_var, status_var, summary_var),
         width=18,
     )
-    preview_button.pack(pady=(0, 10))
-
-    open_preview_button = tk.Button(
-        root,
-        text="Open preview",
-        font=("Arial", 11),
-        command=lambda: open_preview(status_var),
-        width=18,
-    )
-    open_preview_button.pack(pady=(0, 10))
-
-    open_preview_folder_button = tk.Button(
-        root,
-        text="Open preview folder",
-        font=("Arial", 11),
-        command=lambda: open_preview_folder(status_var),
-        width=18,
-    )
-    open_preview_folder_button.pack(pady=(0, 25))
+    preview_button.pack(side="left")
 
     status_label = tk.Label(
         root,
@@ -217,7 +211,7 @@ def main() -> None:
         font=("Arial", 10),
         anchor="w",
     )
-    status_label.pack(fill="x", pady=(10, 5))
+    status_label.pack(fill="x", pady=(0, 5))
 
     summary_label = tk.Label(
         root,
@@ -225,9 +219,42 @@ def main() -> None:
         font=("Arial", 10),
         anchor="w",
         justify="left",
-        wraplength=800,
+        wraplength=920,
     )
-    summary_label.pack(fill="x")
+    summary_label.pack(fill="x", pady=(0, 15))
+
+    preview_title_label = tk.Label(
+        root,
+        text="Detailed preview:",
+        font=("Arial", 11),
+        anchor="w",
+    )
+    preview_title_label.pack(fill="x", pady=(0, 5))
+
+    preview_frame = tk.Frame(root)
+    preview_frame.pack(fill="both", expand=True)
+
+    preview_scrollbar = tk.Scrollbar(preview_frame)
+    preview_scrollbar.pack(side="right", fill="y")
+
+    preview_text = tk.Text(
+        preview_frame,
+        wrap="word",
+        font=("Courier New", 10),
+        yscrollcommand=preview_scrollbar.set,
+    )
+    preview_text.pack(side="left", fill="both", expand=True)
+    preview_scrollbar.config(command=preview_text.yview)
+
+    preview_text.insert("1.0", "Preview output will appear here after you click 'Preview changes'.")
+    preview_text.config(state="disabled")
+
+    choose_folder_button.config(
+        command=lambda: choose_folder(folder_var, status_var, summary_var, preview_text)
+    )
+    preview_button.config(
+        command=lambda: run_preview(folder_var, status_var, summary_var, preview_text)
+    )
 
     root.mainloop()
 
