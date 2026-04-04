@@ -2,7 +2,9 @@
 
 A safety-first CLI tool for cleaning up mixed-file folders without blindly renaming and moving everything.
 
-Preview file cleanup safely before you rename and reorganize a messy folder.
+Preview file cleanup before changing anything.
+
+Check first. Change later.
 
 ## Why this tool exists
 
@@ -63,33 +65,19 @@ This made preview results less aggressive and reduced unnecessary cleanup sugges
 
 ### Before
 
-- IMG 001.JPG
-- scan(1).pdf
-- final  final report.txt
-- weird@name!.csv
-
-### After
-
-- images/img_001.jpg
-- documents/scan_1.pdf
-- documents/final_final_report.txt
-- documents/weird_name.csv
-
-## Safe workflow
-
-## Example before and after
-
-### Before
 - `IMG 001.JPG`
 - `scan(1).pdf`
 - `final  final report.txt`
 - `weird@name!.csv`
 
 ### After
+
 - `images/img_001.jpg`
 - `documents/scan_1.pdf`
 - `documents/final_final_report.txt`
 - `documents/weird_name.csv`
+
+## Safe workflow
 
 ### Preview only
 
