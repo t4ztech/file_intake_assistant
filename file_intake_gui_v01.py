@@ -1,3 +1,4 @@
+import sys
 import json
 import re
 import subprocess
@@ -68,10 +69,12 @@ def run_preview(
         return
 
     try:
+        script_path = Path(__file__).with_name("file_intake_assistant_v1.py")
+
         subprocess.run(
             [
-                "python3",
-                "file_intake_assistant_v1.py",
+                sys.executable,
+                str(script_path),
                 "--root",
                 folder,
                 "--output-dir",
@@ -221,15 +224,15 @@ def main() -> None:
         justify="left",
         wraplength=920,
     )
-    summary_label.pack(fill="x", pady=(0, 15))
+    summary_label.pack(fill="x", pady=(0, 22))
 
     preview_title_label = tk.Label(
         root,
-        text="Detailed preview:",
+        text="Preview details:",
         font=("Arial", 11),
         anchor="w",
     )
-    preview_title_label.pack(fill="x", pady=(0, 5))
+    preview_title_label.pack(fill="x", pady=(0, 8))
 
     preview_frame = tk.Frame(root)
     preview_frame.pack(fill="both", expand=True)
@@ -240,7 +243,7 @@ def main() -> None:
     preview_text = tk.Text(
         preview_frame,
         wrap="word",
-        font=("Courier New", 10),
+        font=("Courier New", 12),
         yscrollcommand=preview_scrollbar.set,
     )
     preview_text.pack(side="left", fill="both", expand=True)
