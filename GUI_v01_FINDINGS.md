@@ -131,3 +131,21 @@ For the current prototype phase:
 The goal is not just to make the GUI run.
 
 The goal is to make it feel safe, obvious, and non-threatening to a normal user.
+
+
+## Windows Python test result
+
+A Windows-side Python test was completed successfully.
+
+Confirmed results:
+
+- the GUI launches normally through Windows Python
+- Windows folder paths work naturally
+- the folder picker behaves much better than in WSL
+- preview generation works
+- preview details display correctly inside the GUI
+
+Practical conclusion:
+
+- Windows-side execution is a much better direction for normal-user testing than WSL
+- WSL remains useful for development, but Windows is a better target for real user experience
