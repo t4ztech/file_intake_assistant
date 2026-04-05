@@ -92,3 +92,21 @@ Possible later steps may include:
 ## Guiding idea
 
 Check first. Change later.
+
+## Future flavor option
+
+Possible optional feature:
+a small "mission log" panel with ON/OFF toggle that shows playful status text during preview and cleanup flow.
+
+Examples:
+- Scanning hostile folder terrain...
+- Suspicious naming patterns detected.
+- Documents sector secured.
+- Preview ready.
+- All files sorted. Find another battlefield.
+
+Purpose:
+add personality without changing the core safety-first workflow.
+
+This should stay optional and never interfere with the main simple interface.
+
